@@ -4,53 +4,1637 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andrew Paice · Research Consultancy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --white:    #FFFFFF;
+            --grey-50:  #F9F9F8;
+            --grey-100: #F0EFED;
+            --grey-200: #DDDBD7;
+            --grey-300: #C8C5C0;
+            --grey-500: #8A8680;
+            --grey-700: #4A4844;
+            --ink:      #1A1917;
+            --slate:    #708090;
+            --slate-lt: #EEF3F6;
+            --amber:    #B45309;
+            --amber-lt: #FFFBEB;
+        }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
-            color: #1A1917;
-            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--white);
+            color: var(--ink);
+            font-size: 18px;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 2rem; }
+
+        .eyebrow {
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--grey-500);
+            display: block;
+            margin-bottom: 1.1rem;
+        }
+
+        /* ── LOAD ANIMATIONS ─────────────────── */
+        .sl {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 1.1s cubic-bezier(0.22,1,0.36,1),
+                        transform 1.1s cubic-bezier(0.22,1,0.36,1);
+        }
+        body.loaded .sl { opacity: 1; transform: none; }
+        .sl.d-img  { transition-delay: 0.1s; }
+        .sl.d-hook { transition-delay: 0.2s; }
+        .sl.d-text { transition-delay: 0.35s; }
+        .sl.d-btn  { transition-delay: 0.5s; }
+
+        /* scroll-reveal */
+        .fi { opacity:0; transform:translateY(20px); transition: opacity 0.9s ease, transform 0.9s ease; }
+        .fi.on { opacity:1; transform:none; }
+        .fi.d1 { transition-delay:.06s; }
+        .fi.d2 { transition-delay:.12s; }
+        .fi.d3 { transition-delay:.18s; }
+
+        /* slide from left — for hero identity panel */
+        .sl-left {
+            opacity: 0;
+            transform: translateX(-28px);
+            transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1),
+                        transform 0.9s cubic-bezier(0.22,1,0.36,1);
+            transition-delay: 0.25s;
+        }
+        body.loaded .sl-left { opacity: 1; transform: none; }
+
+        /* section scroll reveal */
+        .sec-reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+        .sec-reveal.on { opacity: 1; transform: none; }
+
+        /* NAV */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--grey-100);
+        }
+        .nav-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+        }
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            color: var(--ink);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .nav-links { display: flex; list-style: none; gap: 0.2rem; }
+        .nav-links a {
+            display: block;
+            padding: 0.4rem 1rem;
+            font-size: 1.05rem;
+            color: var(--grey-700);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .nav-links a:hover { background: var(--grey-50); color: var(--ink); }
+        .nav-links .cta { background: var(--ink); color: white !important; font-weight: 500; }
+        .cta-mobile { display: none; }
+        .nav-links .cta:hover { background: var(--slate); }
+
+        /* HERO */
+        header { padding: 1.5rem 0 1rem; border-bottom: 1px solid var(--grey-100); max-height: calc(100vh - 56px); overflow: hidden; }
+        .hero-inner {
+            display: grid;
+            grid-template-columns: 0.85fr 3fr;
+            gap: 2.5rem;
+            align-items: stretch;
+        }
+
+        .hero-left {
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .hero-profile-img {
+            width: 100%;
+            max-width: 100%;
+            flex: 1;
+            min-height: 0;
+            object-fit: cover;
+            object-position: center 15%;
+            display: block;
+            margin-bottom: 0;
+        }
+
+        .hero-eyebrow-wrap {
+            margin-bottom: 1.2rem;
+        }
+
+        .hero-right {
+            display: flex;
+            flex-direction: column;
+            padding-top: 0;
+            text-align: right;
+        }
+        .hero-bio-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 0;
+        }
+
+        /* Name + credentials under photo */
+        .hero-identity {
+            background: var(--ink);
+            padding: 0.9rem 1rem 1rem;
+            margin-top: 0;
+        }
+        .hero-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 0.2rem;
+        }
+        .hero-credentials {
+            font-size: 1.05rem;
+            color: #7BA8BC;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .hero-bio-text {
+            margin-bottom: 2.5rem;
+            text-align: right;
+        }
+        @media (max-width: 860px) {
+            .hero-bio-text { text-align: left; margin-bottom: 1.5rem; }
+        }
+
+        /* Primary + secondary tagline */
+        .hero-primary {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 400;
+            line-height: 1.12;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin-bottom: 1.5rem;
+        }
+        .hero-primary { text-align: left; }
+        .hero-primary em { font-style: italic; color: var(--slate); }
+        .hero-secondary {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--grey-500);
+            line-height: 1.6;
+            margin-bottom: 3rem;
+        }
+
+        .hero-bio {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--grey-700);
+            line-height: 1.85;
+            margin-bottom: 0;
+        }
+        .hero-bio strong { font-weight: 500; color: var(--ink); }
+        .hero-bio p + p { margin-top: 0.9rem; }
+
+
+        .nav-brand-sub {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            color: var(--grey-500);
+            display: block;
+        }
+
+
+        /* STAT ARROWS */
+        .hero-stat-inner {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            width: 100%;
+            justify-content: center;
+        }
+        .stat-arrow {
+            background: none;
+            border: 1px solid var(--grey-200);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            -webkit-font-smoothing: antialiased;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: border-color 0.15s, background 0.15s;
+            color: var(--grey-500);
         }
-        .wrap {
+        .stat-arrow:hover {
+            border-color: var(--slate);
+            background: var(--slate-lt);
+            color: var(--slate);
+        }
+        .stat-arrow svg { width: 12px; height: 12px; }
+
+        /* ROLE GRID */
+        .hero-role-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: #2A2825;
+            margin-top: 0.6rem;
+        }
+        .hero-role-cell {
+            background: var(--ink);
+            padding: 0.9rem 0.6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
             text-align: center;
-            padding: 2rem;
         }
-        h1 {
+        .hero-role-cell svg {
+            color: #7BA8BC;
+        }
+        .hero-role-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #D4D0CB;
+        }
+
+        /* ROTATING STAT */
+        .hero-stat-rotator {
+            margin: 0.5rem 0 0.8rem;
+            padding: 0.8rem 1rem;
+            border-top: 1px solid var(--grey-100);
+            border-bottom: 1px solid var(--grey-100);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .hero-stat-num {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-size: 2.2rem;
             font-weight: 400;
-            margin-bottom: 1rem;
-            color: #1A1917;
+            color: var(--slate);
+            line-height: 1;
+            margin-bottom: 1.2rem;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
-        h1 em { font-style: italic; color: #708090; }
-        p {
+        .hero-stat-desc {
+            font-size: 1.05rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--grey-500);
+            line-height: 1.7;
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            min-height: 3.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .hero-stat-rotator.fading .hero-stat-num,
+        .hero-stat-rotator.fading .hero-stat-desc {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        .hero-stat-dots {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 1.2rem;
+        }
+        .hero-stat-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--grey-200);
+            transition: background 0.3s;
+        }
+        .hero-stat-dot.active { background: var(--slate); }
+
+        .hero-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.2rem; }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 4px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .btn-dark { background: var(--ink); color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+        .btn-dark:hover { background: var(--slate); box-shadow: 0 4px 16px rgba(0,0,0,0.22); }
+        .btn-outline { border: 1.5px solid var(--grey-300); color: var(--grey-700); background: white; }
+        .btn-outline:hover { border-color: var(--ink); color: var(--ink); background: var(--grey-50); }
+
+        /* DISCIPLINES */
+        section { padding: 5.5rem 0; border-bottom: 1px solid var(--grey-100); }
+        section:last-of-type { border-bottom: none; }
+
+        .sh {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            gap: 3rem;
+        }
+        .sh h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.7rem, 2.8vw, 2.5rem);
+            font-weight: 400;
+            line-height: 1.15;
+            margin-top: 0.4rem;
+        }
+        .sh h2 em { font-style: italic; color: var(--slate); }
+        .sh-note {
+            font-size: 1.05rem;
+            color: var(--grey-500);
+            font-weight: 300;
+            max-width: 280px;
+            line-height: 1.7;
+            text-align: right;
+        }
+
+        #disciplines { background: var(--white); }
+
+        .disciplines-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.1rem;
+        }
+
+        .disc-card {
+            background: var(--white);
+            border: 1px solid var(--grey-200);
+            padding: 2rem 1.6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.7rem;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            position: relative;
+        }
+        .disc-card:hover {
+            background: var(--grey-50);
+            border-color: var(--grey-300);
+        }
+        .disc-card.open {
+            background: var(--slate-lt);
+            border-color: var(--slate);
+        }
+        .disc-card-icon { color: var(--slate); margin-bottom: 0.2rem; }
+        .disc-card-keyword {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--slate);
+            line-height: 1.1;
+        }
+        .disc-card-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--ink);
+            line-height: 1.35;
+        }
+        .disc-card-desc {
+            font-family: 'DM Sans', sans-serif;
             font-size: 0.9rem;
             font-weight: 300;
-            color: #8A8680;
-            margin-bottom: 2rem;
+            color: var(--grey-700);
+            line-height: 1.6;
+            text-align: center;
+            margin-top: 0.1rem;
         }
-        a {
-            font-size: 0.82rem;
-            color: #1A1917;
+
+        /* + toggle indicator */
+        .disc-card-toggle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid var(--grey-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+            transition: transform 0.25s, background 0.2s, border-color 0.2s;
+        }
+        .disc-card-toggle svg {
+            width: 10px;
+            height: 10px;
+            stroke: var(--grey-500);
+            transition: stroke 0.2s;
+        }
+        .disc-card.open .disc-card-toggle {
+            transform: rotate(45deg);
+            background: var(--slate);
+            border-color: var(--slate);
+        }
+        .disc-card.open .disc-card-toggle svg { stroke: white; }
+
+        /* hidden skills — revealed on open */
+        .disc-card-skills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.3rem;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.35s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            margin-top: 0;
+        }
+        .disc-card.open .disc-card-skills {
+            max-height: 300px;
+            opacity: 1;
+            margin-top: 0.3rem;
+        }
+        .disc-skill-tag {
+            font-size: 0.9rem;
+            color: var(--grey-500);
+            padding: 0.18rem 0.5rem;
+            background: var(--white);
+            border: 1px solid var(--grey-200);
+            border-radius: 3px;
+        }
+
+        /* Inline number highlight */
+        .n {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05em;
+            font-weight: 400;
+            color: var(--slate);
+        }
+
+        /* ENGAGEMENT */
+        #about { background: var(--grey-50); padding: 3rem 0; }
+        .engage-header {
+            display: flex;
+            align-items: baseline;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .engage-subhead {
+            font-size: 1.05rem;
+            color: var(--grey-500);
+            font-weight: 300;
+        }
+        .engage-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background: var(--grey-200);
+            border: 1px solid var(--grey-200);
+        }
+        .engage-item {
+            background: var(--white);
+            padding: 1.6rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            gap: 0.6rem;
+            cursor: pointer;
             text-decoration: none;
-            border-bottom: 1px solid #DDDBD7;
-            transition: border-color 0.15s;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            z-index: 1;
         }
-        a:hover { border-color: #1A1917; }
+        .engage-item:hover {
+            background: var(--slate-lt);
+            transform: scale(1.04);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+            z-index: 2;
+        }
+        .engage-icon {
+            color: var(--slate);
+            margin-bottom: 0.2rem;
+        }
+        .engage-type {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+        .engage-desc {
+            display: none;
+        }
+
+        /* WORK */
+        #work { background: var(--white); }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--grey-200);
+            border: 1px solid var(--grey-200);
+        }
+        .proj {
+            background: var(--white);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .proj:hover { background: var(--slate-lt); }
+        .proj-inner {
+            padding: 2rem 1.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            height: 100%;
+        }
+        .proj-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .proj-cat {
+            font-size: 1.05rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--slate);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .proj-arr {
+            font-size: 1rem;
+            color: var(--grey-300);
+            transition: transform 0.15s, color 0.15s;
+            flex-shrink: 0;
+            padding-left: 0.5rem;
+        }
+        .proj:hover .proj-arr { transform: translateX(3px); color: var(--slate); }
+        .proj-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: var(--ink);
+            line-height: 1.25;
+        }
+        .proj-summary {
+            font-size: 0.8rem;
+            color: var(--grey-500);
+            font-weight: 300;
+            line-height: 1.75;
+            flex-grow: 1;
+        }
+        .proj-meta {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0.9rem 0;
+            border-top: 1px solid var(--grey-100);
+            border-bottom: 1px solid var(--grey-100);
+        }
+        .proj-stat { display: flex; flex-direction: column; gap: 0.1rem; }
+        .ps-num {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--ink);
+            line-height: 1;
+        }
+        .ps-num sup { font-family: 'DM Sans', sans-serif; font-size: 1.05rem; font-weight: 300; }
+        .ps-label {
+            font-size: 1.05rem;
+            color: var(--grey-500);
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .proj-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        .ptag {
+            font-size: 1rem;
+            padding: 0.2rem 0.55rem;
+            border: 1px solid var(--grey-200);
+            border-radius: 2px;
+            color: var(--grey-500);
+            background: var(--grey-50);
+        }
+
+        /* WORK ACCORDION */
+        #work { background: var(--grey-50); }
+
+        .work-list {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid var(--grey-200);
+        }
+
+        .work-item {
+            border-bottom: 1px solid var(--grey-200);
+            cursor: pointer;
+        }
+
+        .work-item-head {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: start;
+            gap: 2rem;
+            padding: 1.8rem 0;
+            transition: opacity 0.15s;
+        }
+        .work-item:hover .work-item-head { opacity: 0.75; }
+
+        .work-item-cat {
+            font-size: 1.05rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--slate);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-item-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--ink);
+            line-height: 1.25;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-item-summary {
+            font-size: 1.05rem;
+            color: var(--grey-500);
+            font-weight: 300;
+            line-height: 1.75;
+            max-width: 680px;
+        }
+
+        .work-item-toggle {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--grey-200);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 0.3rem;
+            transition: transform 0.25s, background 0.2s, border-color 0.2s;
+        }
+        .work-item-toggle svg {
+            width: 11px;
+            height: 11px;
+            stroke: var(--grey-500);
+            transition: stroke 0.2s;
+        }
+        .work-item.open .work-item-toggle {
+            transform: rotate(45deg);
+            background: var(--slate);
+            border-color: var(--slate);
+        }
+        .work-item.open .work-item-toggle svg { stroke: white; }
+
+        .work-item-body {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+            padding-bottom: 0;
+        }
+        .work-item.open .work-item-body {
+            max-height: 600px;
+            opacity: 1;
+            padding-bottom: 2rem;
+        }
+
+        .work-item-narrative {
+            font-size: 1rem;
+            color: var(--grey-700);
+            font-weight: 300;
+            line-height: 1.9;
+            max-width: 720px;
+            border-left: 2px solid var(--grey-200);
+            padding-left: 1.5rem;
+        }
+        .work-item-narrative em {
+            font-style: italic;
+            color: var(--slate);
+            font-weight: 400;
+        }
+        .work-item-narrative p + p { margin-top: 0.9rem; }
+
+        /* TESTIMONIALS */
+        #testimonials { background: var(--grey-50); }
+
+        .testi-note {
+            font-size: 0.8rem;
+            color: var(--grey-500);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--grey-200);
+            border: 1px solid var(--grey-200);
+        }
+        .testi {
+            background: var(--white);
+            padding: 2rem 1.8rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.6rem;
+        }
+        .testi-quote {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--grey-500);
+            line-height: 1.8;
+        }
+        .testi-person { display: flex; align-items: center; gap: 0.8rem; }
+        .testi-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--grey-100);
+            border: 1px solid var(--grey-200);
+            flex-shrink: 0;
+        }
+        .testi-role {
+            font-size: 1rem;
+            color: var(--grey-500);
+            font-weight: 300;
+        }
+
+        /* CONTACT */
+        .contact-dark {
+            background: var(--ink);
+            border-bottom: none;
+        }
+        .contact-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: start;
+        }
+        .contact-wrap h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.7rem, 2.8vw, 2.5rem);
+            font-weight: 400;
+            line-height: 1.15;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+        .contact-wrap h2 em { font-style: italic; color: #7BA8BC; }
+        .contact-wrap > div > p {
+            font-size: 1rem;
+            font-weight: 300;
+            line-height: 1.75;
+            color: var(--grey-500);
+        }
+        .contact-items { margin-bottom: 2rem; }
+        .ci {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #2A2825;
+            font-size: 1.05rem;
+        }
+        .ci:first-child { border-top: 1px solid #2A2825; }
+        .ci-l { color: var(--grey-500); }
+        .ci-v { color: #D4D0CB; }
+        .ci-v a { color: inherit; text-decoration: none; border-bottom: 1px solid #3A3835; transition: border-color 0.15s; }
+        .ci-v a:hover { border-color: var(--grey-500); }
+        .btn-contact {
+            display: inline-block;
+            padding: 0.75rem 1.8rem;
+            background: var(--white);
+            color: var(--ink);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .btn-contact:hover { background: var(--grey-100); }
+        .eyebrow-light { color: var(--grey-500); }
+
+        /* FOOTER */
+        footer {
+            background: var(--ink);
+            border-top: 1px solid #2A2825;
+            padding: 1.5rem 0;
+        }
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.05rem;
+            color: #3A3835;
+            font-weight: 300;
+        }
+
+        /* MODALS */
+        .modal-bg {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(26,25,23,0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+        .modal-bg.on { opacity: 1; pointer-events: all; }
+        .modal {
+            background: var(--white);
+            max-width: 560px;
+            width: 100%;
+            padding: 2.8rem;
+            position: relative;
+            transform: translateY(16px);
+            transition: transform 0.25s;
+        }
+        .modal-bg.on .modal { transform: none; }
+        .modal-x {
+            position: absolute; top: 1.1rem; right: 1.1rem;
+            background: none; border: none;
+            font-size: 1rem; cursor: pointer;
+            color: var(--grey-500);
+            width: 26px; height: 26px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            transition: background 0.15s;
+        }
+        .modal-x:hover { background: var(--grey-100); color: var(--ink); }
+        .modal-top { margin-bottom: 1.4rem; }
+        .modal-top h2 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-top: 0.4rem;
+            line-height: 1.25;
+        }
+        .modal-stats {
+            display: flex;
+            gap: 2.2rem;
+            padding: 1rem 0;
+            border-top: 1px solid var(--grey-100);
+            border-bottom: 1px solid var(--grey-100);
+            margin-bottom: 1.3rem;
+            flex-wrap: wrap;
+        }
+        .modal-body p {
+            font-size: 0.87rem;
+            color: var(--grey-700);
+            font-weight: 300;
+            line-height: 1.85;
+            margin-bottom: 0.9rem;
+        }
+        .modal-body p:last-child { margin-bottom: 0; }
+        .modal-body p strong { font-weight: 500; color: var(--ink); }
+        .modal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 1.3rem;
+            padding-bottom: 1.3rem;
+            border-bottom: 1px solid var(--grey-100);
+        }
+        .mm {
+            font-size: 1.05rem;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid var(--grey-200);
+            border-radius: 2px;
+            color: var(--grey-700);
+            background: var(--grey-50);
+        }
+
+        /* RESPONSIVE */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: stretch;
+        }
+
+        @media (max-width: 860px) {
+            header { max-height: none; overflow: visible; padding: 1rem 0 1.5rem; }
+            .hero-inner { grid-template-columns: 1fr; gap: 1.5rem; align-items: start; }
+            .hero-left { display: flex; flex-direction: row; }
+            .hero-profile-img { width: 150px; min-width: 150px; max-height: none; aspect-ratio: 3/4; }
+            .hero-identity { flex: 1; }
+            .hero-name { font-size: 1.7rem; }
+            .hero-credentials { font-size: 0.9rem; }
+            .hero-right { text-align: left; min-height: auto; }
+            .hero-bio-wrap { flex: none; }
+            .hero-btns { margin-top: 1.5rem; justify-content: flex-start; }
+            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .engage-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .engage-desc { display: block; font-size: 0.85rem; color: var(--grey-500); }
+            .disciplines-grid { grid-template-columns: repeat(2, 1fr); }
+            .contact-wrap { grid-template-columns: 1fr; gap: 2rem; }
+            .sh { flex-direction: column; gap: 0.5rem; }
+            .sh-note { text-align: left; max-width: 100%; }
+        }
+
+        @media (max-width: 560px) {
+            header { max-height: none; overflow: visible; padding: 0.75rem 0 1.5rem; }
+            .hero-inner { grid-template-columns: 1fr; gap: 1rem; align-items: start; }
+            .hero-left { flex-direction: column; }
+            .hero-profile-img { width: 100%; min-width: 0; max-height: 260px; aspect-ratio: auto; object-position: center 10%; }
+            .hero-identity { padding: 0.75rem 1rem 1rem; }
+            .hero-name { font-size: 1.5rem; }
+            .hero-credentials { font-size: 0.85rem; margin-bottom: 0.6rem !important; }
+            .hero-role-label { font-size: 0.75rem; letter-spacing: 0.04em; }
+            .hero-right { text-align: left; min-height: auto; }
+            .hero-primary { font-size: 1.4rem; margin-bottom: 1rem; }
+            .hero-bio-wrap { flex: none; }
+            .hero-btns { margin-top: 1.2rem; justify-content: flex-start; flex-wrap: wrap; }
+            .about-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .engage-grid { grid-template-columns: 1fr !important; }
+            .engage-desc { display: block; font-size: 0.85rem; color: var(--grey-500); }
+            .disciplines-grid { grid-template-columns: 1fr; }
+            .nav-links li:not(:last-child) { display: none; }
+            .nav-brand-sub { display: none; }
+            .cta-desktop { display: none; }
+            .cta-mobile { display: inline; }
+        }
+        .fi { opacity:1 !important; transform:none !important; }
+
+        /* PROBONO POPUP */
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26,25,23,0.6);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .popup-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .popup-box {
+            background: var(--white);
+            max-width: 520px;
+            width: 100%;
+            padding: 2.5rem 2.5rem 2rem;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+        }
+        .popup-overlay.visible .popup-box {
+            transform: translateY(0);
+        }
+        .popup-eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: var(--slate);
+            display: block;
+            margin-bottom: 0.9rem;
+        }
+        .popup-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 400;
+            line-height: 1.2;
+            color: var(--ink);
+            margin-bottom: 1rem;
+        }
+        .popup-title em { font-style: italic; color: var(--slate); }
+        .popup-body {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: var(--grey-700);
+            line-height: 1.75;
+            margin-bottom: 1.8rem;
+        }
+        .popup-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .popup-cta {
+            display: inline-block;
+            padding: 0.6rem 1.3rem;
+            background: var(--ink);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .popup-cta:hover { background: var(--slate); }
+        .popup-dismiss {
+            font-size: 0.88rem;
+            color: var(--grey-500);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-family: 'DM Sans', sans-serif;
+            transition: color 0.15s;
+        }
+        .popup-dismiss:hover { color: var(--ink); }
+        .popup-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 28px;
+            height: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--grey-500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s;
+        }
+        .popup-close:hover { color: var(--ink); }
+        .popup-close svg { width: 16px; height: 16px; }
     </style>
 </head>
-<body>
-    <div class="wrap">
-        <h1>Andrew Paice | Consultancy</h1>
-        <h1><em>Coming soon.</em></h1>
-        <p>Research &amp; Statistical Consultancy · Bedfordshire, UK</p>
-        <a href="mailto:andrew.w.paice@gmail.com">andrew.w.paice@gmail.com</a>
+<body class="loaded">
+
+<!-- PROBONO POPUP -->
+<div class="popup-overlay" id="probonoPopup">
+    <div class="popup-box">
+        <button class="popup-close" id="popupClose" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <span class="popup-eyebrow">Limited availability</span>
+        <h2 class="popup-title">Pro-bono work,<br><em>in exchange for a testimonial.</em></h2>
+        <p class="popup-body">A small number of pro-bono projects, in exchange for a testimonial. If you have a need, get in touch.</p>
+        <div class="popup-actions">
+            <a href="mailto:hello@andrewpaice.co.uk?subject=Pro-bono%20enquiry" class="popup-cta">Get in touch</a>
+            <button class="popup-dismiss" id="popupDismiss">No thanks, maybe later</button>
+        </div>
     </div>
+</div>
+
+<!-- NAV -->
+<nav>
+    <div class="container">
+        <div class="nav-row">
+            <a href="#" class="nav-brand">Andrew Paice<span class="nav-brand-sub">Research &amp; Statistical Consultancy</span></a>
+            <ul class="nav-links">
+                <li><a href="#disciplines">Disciplines</a></li>
+                <li><a href="#work">Work</a></li>
+                <li><a href="#contact" class="cta"><span class="cta-desktop">Get in touch</span><span class="cta-mobile">Email me</span></a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<header>
+    <div class="container">
+        <div class="hero-inner">
+
+            <!-- LEFT: Photo + Identity -->
+            <div class="hero-left">
+                <img src="profileimage.png" alt="Andrew Paice" class="hero-profile-img sl d-img" />
+                <div class="hero-identity sl-left">
+                    <p class="hero-name">Andrew Paice</p>
+                    <p class="hero-credentials" style="margin-bottom:1.2rem;">MSc (Hons) · BSc (Hons)<br>PhD Candidate, Cognitive Psychology<br>University of Hertfordshire</p>
+                    <div class="hero-role-grid">
+                        <div class="hero-role-cell">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 1 0 0 14A7 7 0 0 0 12 2z"/><path d="M6.5 21.5a9 9 0 0 1 11 0"/></svg>
+                            <span class="hero-role-label">Researcher</span>
+                        </div>
+                        <div class="hero-role-cell">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                            <span class="hero-role-label">Consultant</span>
+                        </div>
+                        <div class="hero-role-cell">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span class="hero-role-label">Trainer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Taglines + Bio -->
+            <div class="hero-right sl d-hook">
+                <p class="hero-primary">From <em>questions</em><br>to <em>findings.</em></p>
+                <div class="hero-bio-wrap">
+                <div class="hero-bio sl d-text">
+                    <div class="hero-bio-text">
+                        <p style="font-size:0.95rem;font-family:'DM Sans',sans-serif;font-weight:300;color:#4A4844;line-height:1.7;margin:0;"><strong>Independent end-to-end researcher.</strong><br>Helping organisations get the evidence they need.<br>PhD-level expertise across research design, statistical modelling, and analysis.</p>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;background:transparent;margin:0 3rem 1.5rem;">
+                        <a href="#disciplines" style="display:flex;flex-direction:column;align-items:center;gap:0.25rem;padding:0.45rem 0.4rem 0.4rem;background:#fff;text-align:center;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#EEF3F6'" onmouseout="this.style.background='#fff'"><svg width="52" height="52" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="4" width="12" height="16" rx="1.5" stroke="#708090" stroke-width="1.5"/><rect x="8" y="2" width="6" height="4" rx="1" stroke="#708090" stroke-width="1.5"/><line x1="8" y1="9" x2="14" y2="9" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="12" x2="14" y2="12" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="15" x2="11" y2="15" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:400;color:#4A4844;line-height:1.35;">Research design<br>&amp; methods</span></a>
+                        <a href="#disciplines" style="display:flex;flex-direction:column;align-items:center;gap:0.25rem;padding:0.45rem 0.4rem 0.4rem;background:#fff;text-align:center;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#EEF3F6'" onmouseout="this.style.background='#fff'"><svg width="52" height="52" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="2" width="14" height="18" rx="1.5" stroke="#708090" stroke-width="1.5"/><circle cx="7" cy="8" r="1" fill="#708090"/><line x1="9.5" y1="8" x2="15" y2="8" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="12" r="1" fill="#708090"/><line x1="9.5" y1="12" x2="15" y2="12" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="16" r="1" fill="#708090"/><line x1="9.5" y1="16" x2="13" y2="16" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:400;color:#4A4844;line-height:1.35;">Data collection<br>&amp; measurement</span></a>
+                        <a href="#disciplines" style="display:flex;flex-direction:column;align-items:center;gap:0.25rem;padding:0.45rem 0.4rem 0.4rem;background:#fff;text-align:center;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#EEF3F6'" onmouseout="this.style.background='#fff'"><svg width="52" height="52" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="3" y1="3" x2="3" y2="19" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><line x1="3" y1="19" x2="19" y2="19" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="15" r="1.5" fill="#708090"/><circle cx="9" cy="13" r="1.5" fill="#708090"/><circle cx="12" cy="10" r="1.5" fill="#708090"/><circle cx="15" cy="8" r="1.5" fill="#708090"/><line x1="5" y1="16" x2="16" y2="7" stroke="#708090" stroke-width="1.2" stroke-linecap="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:400;color:#4A4844;line-height:1.35;">Analysis &amp;<br>data visualisation</span></a>
+                        <a href="#disciplines" style="display:flex;flex-direction:column;align-items:center;gap:0.25rem;padding:0.45rem 0.4rem 0.4rem;background:#fff;text-align:center;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#EEF3F6'" onmouseout="this.style.background='#fff'"><svg width="52" height="52" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="3" y1="19" x2="19" y2="19" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><rect x="4" y="13" width="4" height="6" rx="0.5" stroke="#708090" stroke-width="1.5"/><rect x="9" y="9" width="4" height="10" rx="0.5" stroke="#708090" stroke-width="1.5"/><rect x="14" y="5" width="4" height="14" rx="0.5" stroke="#708090" stroke-width="1.5"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:400;color:#4A4844;line-height:1.35;">Impact &amp;<br>evaluation reports</span></a>
+                        <a href="#disciplines" style="display:flex;flex-direction:column;align-items:center;gap:0.25rem;padding:0.45rem 0.4rem 0.4rem;background:#fff;text-align:center;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#EEF3F6'" onmouseout="this.style.background='#fff'"><svg width="52" height="52" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8L11 4L19 8L11 12L3 8Z" stroke="#708090" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 10V15C6 17.5 8 19 11 19C14 19 16 17.5 16 15V10" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:400;color:#4A4844;line-height:1.35;">Training &amp;<br>workshops</span></a>
+                        <a href="#disciplines" style="display:flex;flex-direction:column;align-items:center;gap:0.25rem;padding:0.45rem 0.4rem 0.4rem;background:#fff;text-align:center;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#EEF3F6'" onmouseout="this.style.background='#fff'"><svg width="52" height="52" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="11" r="2.5" stroke="#708090" stroke-width="1.5"/><line x1="7.5" y1="11" x2="10" y2="11" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><rect x="10" y="8.5" width="4" height="5" rx="1" stroke="#708090" stroke-width="1.5"/><line x1="14" y1="11" x2="16" y2="11" stroke="#708090" stroke-width="1.5" stroke-linecap="round"/><circle cx="18" cy="11" r="2.5" stroke="#708090" stroke-width="1.5"/><polyline points="16.8,9.8 18,11 16.8,12.2" stroke="#708090" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:400;color:#4A4844;line-height:1.35;">End-to-end<br>delivery</span></a>
+                    </div>
+
+                </div>
+
+                <div class="hero-btns sl d-btn">
+                    <a href="#contact" class="btn btn-dark">Book a free consultation</a>
+                    <a href="#disciplines" class="btn btn-outline">See my disciplines</a>
+                    <a href="#work" class="btn btn-outline">See my projects</a>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- HOW I ENGAGE -->
+<section id="about" class="sec-reveal">
+    <div class="container">
+        <div class="about-grid fi">
+            <div>
+                <div class="engage-header">
+                    <span class="eyebrow" style="margin-bottom:0;">Open for engagement</span>
+                    <p class="engage-subhead">Scoped to your needs. <a href="#contact" style="color:var(--slate); border-bottom:1px solid currentColor; text-decoration:none;">Get in touch to discuss →</a></p>
+                </div>
+                <div class="engage-grid fi">
+            <a class="engage-item" href="#contact">
+                <div class="engage-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+                <span class="engage-type">Short-term projects</span>
+                <span class="engage-desc">Fixed scope, clear deliverables, completed in weeks to a few months. No retainer required.</span>
+            </a>
+            <a class="engage-item" href="#contact">
+                <div class="engage-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <span class="engage-type">Long-term partnerships</span>
+                <span class="engage-desc">Embedded research support or ongoing advisory: your dedicated analyst without the overhead.</span>
+            </a>
+            <a class="engage-item" href="#contact">
+                <div class="engage-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+                <span class="engage-type">Charity &amp; NGO</span>
+                <span class="engage-desc">Impact evaluation, evidence generation, and beneficiary research. Rigorous work built for mission-driven organisations.</span>
+            </a>
+            <a class="engage-item" href="#contact">
+                <div class="engage-icon"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+                <span class="engage-type">Freelance consultancy</span>
+                <span class="engage-desc">Ad hoc or retainer: expert statistical and research support exactly when you need it, including dashboards, data pipelines, and analysis, nothing more.</span>
+            </a>
+                </div>
+            </div>
+            <div style="display:flex;align-items:stretch;flex:1;">
+                <div class="hero-stat-rotator" id="statRotator" style="border:1px solid var(--grey-100);border-radius:4px;width:100%;flex:1;margin:0;padding:2rem 1rem;justify-content:center;">
+                    <div class="hero-stat-num" id="statNum">8+ years</div>
+                    <div class="hero-stat-desc" id="statDesc">of applied research experience across experimental design, clinical fieldwork, and evidence translation</div>
+                    <div class="hero-stat-dots">
+                        <div class="hero-stat-dot active" data-i="0"></div>
+                        <div class="hero-stat-dot" data-i="1"></div>
+                        <div class="hero-stat-dot" data-i="2"></div>
+                        <div class="hero-stat-dot" data-i="3"></div>
+                        <div class="hero-stat-dot" data-i="4"></div>
+                        <div class="hero-stat-dot" data-i="5"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DISCIPLINES -->
+<section id="disciplines" class="sec-reveal">
+    <div class="container">
+        <div class="sh fi">
+            <div>
+                <span class="eyebrow">Disciplines</span>
+                <h2>What can I<br><em>help you with?</em></h2>
+            </div>
+            <p class="sh-note">Click any card to see what's involved.</p>
+        </div>
+
+        <div class="disciplines-grid">
+
+            <div class="disc-card fi d1">
+                <div class="disc-card-icon"><svg width="48" height="48" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="4" width="12" height="16" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="8" y="2" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.5"/><line x1="8" y1="9" x2="14" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="12" x2="14" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="15" x2="11" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <div class="disc-card-keyword">Research design &amp; methods</div>
+                <div class="disc-card-desc">Rigorous study design built to answer your actual question. Appropriately powered, ethically sound, and ready for scrutiny.</div>
+                <div class="disc-card-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                <div class="disc-card-skills">
+                    <span class="disc-skill-tag">RCT &amp; quasi-experimental design</span>
+                    <span class="disc-skill-tag">Power &amp; sample size analysis</span>
+                    <span class="disc-skill-tag">Ethics applications</span>
+                    <span class="disc-skill-tag">Pre-registration</span>
+                    <span class="disc-skill-tag">Mixed-methods frameworks</span>
+                    <span class="disc-skill-tag">Protocol development</span>
+                </div>
+            </div>
+
+            <div class="disc-card fi d2">
+                <div class="disc-card-icon"><svg width="48" height="48" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="2" width="14" height="18" rx="1.5" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="8" r="1" fill="currentColor"/><line x1="9.5" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="12" r="1" fill="currentColor"/><line x1="9.5" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="16" r="1" fill="currentColor"/><line x1="9.5" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <div class="disc-card-keyword">Data collection &amp; measurement</div>
+                <div class="disc-card-desc">Surveys, questionnaires, and interview guides designed to measure what actually matters. Built for validity from the start.</div>
+                <div class="disc-card-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                <div class="disc-card-skills">
+                    <span class="disc-skill-tag">Survey &amp; questionnaire design</span>
+                    <span class="disc-skill-tag">Psychometric scale development</span>
+                    <span class="disc-skill-tag">Interview &amp; focus group design</span>
+                    <span class="disc-skill-tag">Participant recruitment</span>
+                    <span class="disc-skill-tag">Pilot testing &amp; validation</span>
+                    <span class="disc-skill-tag">GDPR-compliant data handling</span>
+                </div>
+            </div>
+
+            <div class="disc-card fi d3">
+                <div class="disc-card-icon"><svg width="48" height="48" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="3" y1="3" x2="3" y2="19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="3" y1="19" x2="19" y2="19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="6" cy="15" r="1.5" fill="currentColor"/><circle cx="9" cy="13" r="1.5" fill="currentColor"/><circle cx="12" cy="10" r="1.5" fill="currentColor"/><circle cx="15" cy="8" r="1.5" fill="currentColor"/><line x1="5" y1="16" x2="16" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+                <div class="disc-card-keyword">Analysis &amp; data visualisation</div>
+                <div class="disc-card-desc">From raw data to clean, documented outputs. Advanced statistical modelling in R, fully reproducible and audit-ready.</div>
+                <div class="disc-card-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                <div class="disc-card-skills">
+                    <span class="disc-skill-tag">GLMMs &amp; mixed-effects modelling</span>
+                    <span class="disc-skill-tag">Regression &amp; predictive modelling</span>
+                    <span class="disc-skill-tag">Data cleaning &amp; pipelines</span>
+                    <span class="disc-skill-tag">A/B test analysis</span>
+                    <span class="disc-skill-tag">Reproducible reporting (R Markdown)</span>
+                    <span class="disc-skill-tag">Data visualisation</span>
+                </div>
+            </div>
+
+            <div class="disc-card fi d1">
+                <div class="disc-card-icon"><svg width="48" height="48" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="3" y1="19" x2="19" y2="19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="4" y="13" width="4" height="6" rx="0.5" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="9" width="4" height="10" rx="0.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="5" width="4" height="14" rx="0.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
+                <div class="disc-card-keyword">Impact &amp; evaluation reports</div>
+                <div class="disc-card-desc">Evidence presented clearly for boards, funders, and decision-makers. Reports and visualisations that drive action.</div>
+                <div class="disc-card-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                <div class="disc-card-skills">
+                    <span class="disc-skill-tag">Impact &amp; evaluation reports</span>
+                    <span class="disc-skill-tag">Interactive dashboards</span>
+                    <span class="disc-skill-tag">Data visualisation</span>
+                    <span class="disc-skill-tag">Policy &amp; funding briefs</span>
+                    <span class="disc-skill-tag">Executive summaries</span>
+                    <span class="disc-skill-tag">Plain-language write-up</span>
+                </div>
+            </div>
+
+            <div class="disc-card fi d2">
+                <div class="disc-card-icon"><svg width="48" height="48" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8L11 4L19 8L11 12L3 8Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 10V15C6 17.5 8 19 11 19C14 19 16 17.5 16 15V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <div class="disc-card-keyword">Training &amp; workshops</div>
+                <div class="disc-card-desc">Workshops and one-to-one training in statistics and research methods. Tailored to your team, practical, and jargon-light.</div>
+                <div class="disc-card-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                <div class="disc-card-skills">
+                    <span class="disc-skill-tag">Statistics training (R &amp; SPSS)</span>
+                    <span class="disc-skill-tag">Research design workshops</span>
+                    <span class="disc-skill-tag">One-to-one mentoring</span>
+                    <span class="disc-skill-tag">Open Science practices</span>
+                    <span class="disc-skill-tag">Bespoke team training</span>
+                </div>
+            </div>
+
+            <div class="disc-card fi d3">
+                <div class="disc-card-icon"><svg width="48" height="48" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="11" r="2.5" stroke="currentColor" stroke-width="1.5"/><line x1="7.5" y1="11" x2="10" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="10" y="8.5" width="4" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><line x1="14" y1="11" x2="16" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="18" cy="11" r="2.5" stroke="currentColor" stroke-width="1.5"/><polyline points="16.8,9.8 18,11 16.8,12.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div>
+                <div class="disc-card-keyword">End-to-end delivery</div>
+                <div class="disc-card-desc">From scoping and ethics through to final handover. One point of contact, clear timelines, and clean deliverables.</div>
+                <div class="disc-card-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                <div class="disc-card-skills">
+                    <span class="disc-skill-tag">Project scoping &amp; planning</span>
+                    <span class="disc-skill-tag">Multi-site coordination</span>
+                    <span class="disc-skill-tag">Ethics &amp; GDPR compliance</span>
+                    <span class="disc-skill-tag">Stakeholder management</span>
+                    <span class="disc-skill-tag">Risk assessment</span>
+                    <span class="disc-skill-tag">Documentation &amp; handover</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- WORK -->
+<section id="work" class="sec-reveal">
+    <div class="container">
+        <div class="sh fi">
+            <div>
+                <span class="eyebrow">Selected work</span>
+                <h2>Projects that<br><em>made a difference.</em></h2>
+            </div>
+            <p class="sh-note">Click any project to read what was involved.</p>
+        </div>
+
+        <div class="work-list">
+
+            <!-- 1: UK-Belgium -->
+            <div class="work-item fi">
+                <div class="work-item-head">
+                    <div>
+                        <p class="work-item-cat">Education · Cognitive Science · International</p>
+                        <h3 class="work-item-title">Improving arithmetic learning in UK and Belgian schools</h3>
+                        <p class="work-item-summary">A multi-site international trial applying memory science to multiplication fact learning, achieving a 37%+ improvement in outcomes across two countries and three languages.</p>
+                    </div>
+                    <div class="work-item-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                </div>
+                <div class="work-item-body">
+                    <div class="work-item-narrative">
+                        <p>The question was whether treating multiplication facts as verbal memory sequences, drawing on an effect known as the <em>Hebb Repetition Effect</em>, would produce meaningfully better learning outcomes than standard teaching methods. I contributed to the study design and wrote the <em>standardised protocols</em> to ensure recruitment and data collection were carried out consistently across all participating schools.</p>
+                        <p>I supported and co-coordinated the research teams across the UK and Belgium, working to keep procedures aligned across institutions and languages. The statistical pipeline used <em>generalised linear mixed models (GLMMs) in R</em> to account for both participant-level and item-level variance. The result was a <em>37%+ improvement in arithmetic learning outcomes</em>, with evidence-based materials produced for classroom use across both countries.</p>
+                        <p>Skills and tools: <em>protocol design</em>, <em>multi-site coordination</em>, <em>standardisation</em>, <em>GLMMs</em>, <em>R</em>, <em>stakeholder management</em>, <em>ethics applications</em>, <em>evidence translation</em>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2: Stats module -->
+            <div class="work-item fi">
+                <div class="work-item-head">
+                    <div>
+                        <p class="work-item-cat">Product Delivery · Training · Higher Education</p>
+                        <h3 class="work-item-title">Designing and delivering an MSc statistics curriculum from scratch</h3>
+                        <p class="work-item-summary">Commissioned by the University to design, build, and deliver a full statistics module for Life and Medical Sciences postgraduates, completed in two months, now self-sustaining at 100+ students annually.</p>
+                    </div>
+                    <div class="work-item-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                </div>
+                <div class="work-item-body">
+                    <div class="work-item-narrative">
+                        <p>The University needed a statistics module for MSc Life and Medical Sciences students with no existing curriculum, no materials, and a two-month delivery window. I was commissioned to build it end-to-end: scoping the learning needs of the cohort, negotiating the syllabus with the client, and designing all content and assessments from scratch.</p>
+                        <p>The module was built as an <em>online product</em> designed to run autonomously, without my continued involvement. That meant everything had to be self-contained: clear enough for students to work through independently, robust enough to be delivered by others, and structured for <em>scalable annual delivery</em>. It covers <em>descriptive and inferential statistics</em>, <em>hypothesis testing</em>, <em>regression</em>, and <em>data visualisation</em>, with practical sessions in <em>SPSS</em>. It was delivered on time, fully documented, handed over, and has reached <em>hundreds of postgraduate students</em> every year since.</p>
+                        <p>Skills and tools: <em>curriculum design</em>, <em>rapid scoping</em>, <em>stakeholder negotiation</em>, <em>online module development</em>, <em>SPSS</em>, <em>statistics training</em>, <em>product handover</em>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3: Open Science ecosystem -->
+            <div class="work-item fi">
+                <div class="work-item-head">
+                    <div>
+                        <p class="work-item-cat">Behaviour Change · Systems Design · Research Culture</p>
+                        <h3 class="work-item-title">Building an Open Science engagement ecosystem for 150+ researchers</h3>
+                        <p class="work-item-summary">Treated the adoption of Open Science practices as a behaviour change problem, not a communications one. Designed and built a seven-component system from needs analysis to full handover.</p>
+                    </div>
+                    <div class="work-item-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                </div>
+                <div class="work-item-body">
+                    <div class="work-item-narrative">
+                        <p>Getting 150+ researchers to change their practice is not an information problem: it is a <em>behaviour change</em> problem. I began with structured <em>focus groups and stakeholder interviews</em> to identify seven distinct engagement segments across the research community, then designed interventions specific to each.</p>
+                        <p>I built a seven-component ecosystem from scratch: brand identity, multi-platform content strategy, a measurable pledge system, an analytics infrastructure, peer accountability features, and full handover documentation. The design drew on <em>behavioural science</em> principles including <em>default bias</em>, <em>social proof</em>, and <em>commitment devices</em>. The system was handed over ready for deployment and sustained operation without my involvement.</p>
+                        <p>Skills and tools: <em>needs analysis</em>, <em>behaviour change frameworks</em>, <em>focus groups</em>, <em>systems design</em>, <em>stakeholder management</em>, <em>content strategy</em>, <em>end-to-end delivery</em>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4: One-to-one stats -->
+            <div class="work-item fi">
+                <div class="work-item-head">
+                    <div>
+                        <p class="work-item-cat">Consultancy · Statistics · Mentoring</p>
+                        <h3 class="work-item-title">One-to-one statistics consultancy for researchers and students</h3>
+                        <p class="work-item-summary">Individual sessions supporting researchers, postgraduates, and early-career academics through analysis problems: from choosing the right model to interpreting and reporting results.</p>
+                    </div>
+                    <div class="work-item-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                </div>
+                <div class="work-item-body">
+                    <div class="work-item-narrative">
+                        <p>Over eight years I have provided individual statistics support to BSc, MSc, and PhD researchers across psychology, health, education, and linguistics. Sessions ranged from one-off problem-solving: diagnosing why a model wasn't converging, selecting an appropriate test, troubleshooting <em>R</em> or <em>SPSS</em> code. Others were longer-term analytical mentoring across a full dissertation or research project.</p>
+                        <p>Common presenting problems included <em>assumption violations</em>, <em>mixed-effects model specification</em>, <em>sample size and power</em> decisions, and <em>result interpretation and write-up</em>.</p>
+                        <p>Skills and tools: <em>R</em>, <em>SPSS</em>, <em>GLMMs</em>, <em>regression</em>, <em>power analysis</em>, <em>data pipelines</em>, <em>plain-language communication</em>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5: Dementia/MCI -->
+            <div class="work-item fi">
+                <div class="work-item-head">
+                    <div>
+                        <p class="work-item-cat">Clinical Research · Health · Fieldwork</p>
+                        <h3 class="work-item-title">Wearable technology and memory assessment in dementia and MCI</h3>
+                        <p class="work-item-summary">Fieldwork and analysis support on a clinical study examining memory assessment in participants with dementia and mild cognitive impairment, including neurological testing and participant engagement.</p>
+                    </div>
+                    <div class="work-item-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                </div>
+                <div class="work-item-body">
+                    <div class="work-item-narrative">
+                        <p>This study investigated whether wearable technology could support memory assessment in clinical populations. I conducted <em>neurological baseline assessments</em> to determine participant suitability, engaged directly with participants to ensure their views and needs were incorporated into the process, and contributed to discussions on <em>data analysis strategy</em>.</p>
+                        <p>Working with a vulnerable population required careful attention to <em>ethics compliance</em>, <em>safeguarding</em>, and <em>participant wellbeing</em> throughout. The experience developed my understanding of how research design must adapt when working outside a standard lab setting, managing unpredictability, attrition, and the practical constraints of clinical fieldwork.</p>
+                        <p>Skills and tools: <em>clinical fieldwork</em>, <em>neurological assessment</em>, <em>participant management</em>, <em>ethics and safeguarding</em>, <em>data analysis</em>, <em>stakeholder engagement</em>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6: Eye-tracking / consciousness -->
+            <div class="work-item fi">
+                <div class="work-item-head">
+                    <div>
+                        <p class="work-item-cat">Experimental Psychology · Eye-tracking · Consciousness</p>
+                        <h3 class="work-item-title">Visual processing and consciousness: the strange face illusion</h3>
+                        <p class="work-item-summary">Contributed to an investigation of visual processing and consciousness using eye-tracking analysis of the strange face illusion: a perceptual phenomenon where faces appear to distort under sustained gaze.</p>
+                    </div>
+                    <div class="work-item-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                </div>
+                <div class="work-item-body">
+                    <div class="work-item-narrative">
+                        <p>The strange face illusion, in which faces appear to distort when viewed steadily in low light, offers a window into how the visual system constructs conscious perception. I contributed to this study through <em>eye-tracking data analysis</em>, supporting the team on <em>data visualisation</em>, <em>statistical interpretation</em>, and <em>experimental design</em> decisions.</p>
+                        <p>The analysis required working with <em>time-series data</em> from eye-tracking equipment, handling the specific challenges of gaze data including fixation detection, saccade classification, and signal noise. The project sits at the intersection of experimental psychology and consciousness research, an area I find genuinely interesting and where rigorous methodology is particularly important given the difficulty of operationalising subjective experience.</p>
+                        <p>Skills and tools: <em>eye-tracking analysis</em>, <em>time-series data</em>, <em>R</em>, <em>data visualisation</em>, <em>experimental design</em>, <em>consciousness research</em>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7: Sequence learning / JEP publication -->
+            <div class="work-item fi">
+                <div class="work-item-head">
+                    <div>
+                        <p class="work-item-cat">Cognitive Science · Publication · Sequence Learning</p>
+                        <h3 class="work-item-title">Investigating the metrical Hebb effect, published in the Journal of Experimental Psychology</h3>
+                        <p class="work-item-summary">A peer-reviewed experimental programme examining whether the Hebb Repetition Effect extends to metrical structure in word lists, resulting in a publication in one of the field's leading journals.</p>
+                    </div>
+                    <div class="work-item-toggle"><svg viewBox="0 0 10 10" fill="none" stroke-width="1.5" stroke-linecap="round"><line x1="5" y1="1" x2="5" y2="9"/><line x1="1" y1="5" x2="9" y2="5"/></svg></div>
+                </div>
+                <div class="work-item-body">
+                    <div class="work-item-narrative">
+                        <p>The Hebb Repetition Effect describes the finding that repeating a sequence improves recall over time, even without conscious awareness. This programme of research asked whether the effect generalises to <em>metrical structure</em> in word lists: that is, whether rhythmic or stress patterns in language act as implicit learning cues in the same way positional sequences do.</p>
+                        <p>I designed and ran a series of <em>behavioural experiments</em> across memory, language, and semantics, analysed the data using <em>GLMMs</em> and <em>GAMs in R</em>, and co-authored the resulting paper. The work was presented at the <em>Experimental Psychology Society</em> and published in the <em>Journal of Experimental Psychology</em> in 2025. The research contributes to understanding how statistical regularities in language are implicitly encoded, with downstream implications for learning and memory research.</p>
+                        <p>Skills and tools: <em>experimental design</em>, <em>behavioural experiments</em>, <em>GLMMs</em>, <em>GAMs</em>, <em>R</em>, <em>academic writing</em>, <em>pre-registration</em>, <em>open science</em>.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-dark sec-reveal">
+    <div class="container">
+        <div class="contact-wrap fi">
+            <div>
+                <span class="eyebrow eyebrow-light">Get in touch</span>
+                <h2>Ready to talk about<br><em>your project?</em></h2>
+                <p>A free 30-minute consultation to explore what rigorous research design and analysis could do for your work. Pro-bono engagements welcome, capacity permitting.</p>
+            </div>
+            <div>
+                <div class="contact-items">
+                    <div class="ci">
+                        <span class="ci-l">Email</span>
+                        <span class="ci-v"><a href="mailto:hello@andrewpaice.co.uk">hello@andrewpaice.co.uk</a></span>
+                    </div>
+                    <div class="ci">
+                        <span class="ci-l">Location</span>
+                        <span class="ci-v">Bedfordshire, UK · Available remotely</span>
+                    </div>
+                    <div class="ci">
+                        <span class="ci-l">LinkedIn</span>
+                        <span class="ci-v"><a href="https://linkedin.com/in/andrew-paice-1ab505299" target="_blank">linkedin.com/in/andrew-paice-1ab505299</a></span>
+                    </div>
+                </div>
+                <a href="mailto:hello@andrewpaice.co.uk" class="btn-contact">Book a free consultation</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <span>© 2026 Andrew Paice · Research &amp; Statistical Consultancy</span>
+            <span>Bedfordshire, UK</span>
+        </div>
+    </div>
+</footer>
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => document.body.classList.add('loaded'));
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fi').forEach(el => observer.observe(el));
+
+    // Section scroll reveal
+    const secObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); secObserver.unobserve(e.target); } });
+    }, { threshold: 0.07 });
+    document.querySelectorAll('.sec-reveal').forEach(el => secObserver.observe(el));
+
+    // Discipline card toggle
+    document.querySelectorAll('.disc-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const isOpen = card.classList.contains('open');
+            document.querySelectorAll('.disc-card.open').forEach(c => c.classList.remove('open'));
+            if (!isOpen) card.classList.add('open');
+        });
+    });
+
+    // Work item accordion
+    document.querySelectorAll('.work-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.work-item.open').forEach(i => i.classList.remove('open'));
+            if (!isOpen) item.classList.add('open');
+        });
+    });
+
+
+    // Rotating hero stat
+    const stats = [
+        { num: "8+ years",          desc: "of end-to-end research across education, health, psychology, tech, and linguistics" },
+        { num: "20+ clients",       desc: "served across academic institutions, research teams, and education organisations" },
+        { num: "100+ students",     desc: "trained, taught, mentored, and supervised each year through workshops, modules, and individual support" },
+        { num: "150+ researchers",  desc: "engaged to improve practice through a behavioural-science-led programme" },
+        { num: "65% faster",        desc: "project delivery through data workflow optimisation for a client" },
+        { num: "2 awards",          desc: "Dean’s Awards for Research Engagement and Community Engagement, University of Hertfordshire" },
+    ];
+    let statIdx = 0;
+    const rotator  = document.getElementById("statRotator");
+    const numEl    = document.getElementById("statNum");
+    const descEl   = document.getElementById("statDesc");
+    const dots     = document.querySelectorAll(".hero-stat-dot");
+    let autoTimer  = setInterval(advance, 2500);
+
+    function showStat(idx, cancel) {
+        if (cancel) { clearInterval(autoTimer); autoTimer = null; }
+        rotator.classList.add("fading");
+        setTimeout(() => {
+            statIdx = (idx + stats.length) % stats.length;
+            numEl.textContent  = stats[statIdx].num;
+            descEl.textContent = stats[statIdx].desc;
+            dots.forEach((d, i) => d.classList.toggle("active", i === statIdx));
+            rotator.classList.remove("fading");
+        }, 500);
+    }
+
+    function advance() { showStat(statIdx + 1, false); }
+
+    dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => showStat(i, true));
+    });
+
+
+    // Work modals
+    function showModal(id) {
+        document.getElementById(id).classList.add('on');
+        document.body.style.overflow = 'hidden';
+    }
+    // Pro-bono popup
+    const popup = document.getElementById('probonoPopup');
+    const closePopup = () => {
+        popup.classList.remove('visible');
+    };
+    document.getElementById('popupClose').addEventListener('click', closePopup);
+    document.getElementById('popupDismiss').addEventListener('click', closePopup);
+    popup.addEventListener('click', (e) => { if (e.target === popup) closePopup(); });
+
+    setTimeout(() => popup.classList.add('visible'), 12000);
+
+    function hideModal(id) {
+        document.getElementById(id).classList.remove('on');
+        document.body.style.overflow = '';
+    }
+</script>
 </body>
 </html>
